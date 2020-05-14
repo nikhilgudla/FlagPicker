@@ -1,6 +1,15 @@
 ### Flag Picker Application.
 This API provides with end points to fetch flags in 3 steps.
 
+### Installation Instructions:
+
+1. Pull the code from github into eclipse or any IDE.
+2. Tests can be executed which are present in com.flagpicker.search.
+3. Start up the embedded server by running SpringRestRunApplication.
+4. Endpoints can be accessed from browser or using swagger.
+4. Use swagger URL to access the swagger html page.
+5. In the unlikely event that you are unable to run the tests in the debugger, you still have the option of running the tests via "mvn clean test" from your terminal.
+
 ### Flag Picker Service Instructions:
 
 1. For the Flag Search Service, the API that's supported is at
