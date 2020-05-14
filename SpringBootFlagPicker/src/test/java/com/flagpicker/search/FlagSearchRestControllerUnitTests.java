@@ -25,6 +25,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flagpicker.api.Continent;
+import com.flagpicker.api.Country;
 import com.flagpicker.api.FlagSearchService;
 
 import junitparams.JUnitParamsRunner;
@@ -122,6 +123,48 @@ public class FlagSearchRestControllerUnitTests {
         mvc.perform(get("/continent?search=Africa")).
                 andExpect(status().isOk()).
                 andExpect(content().json(mapper.writeValueAsString(emptyList)));
-
+    }
+    
+    @Test
+    public void testGetCountryByContinent() throws Exception {
+    	ObjectMapper mapper = new ObjectMapper();
+    	final String classPathAdjustedDataFileName = "classpath:AmerCountries.json";
+    	List<Country> countries;
+    	List<Country> inValidCounties = new ArrayList<Country>();
+    	
+    	File amerJsonFile = appContext.getResource(classPathAdjustedDataFileName).getFile();
+    	countries = mapper.readValue(amerJsonFile, new TypeReference<List<Country>>() {
+        });
+    	
+    	// Check America - should return 5 elements
+        Mockito.when(mockSearchSvc.getCountries("America")).thenReturn(countries);
+        
+        mvc.perform(get("/country/America")).
+        andExpect(status().isOk()).
+        andExpect(content().json(mapper.writeValueAsString(countries)));
+        
+        // Invalid scenario
+        Mockito.when(mockSearchSvc.getCountries("America")).thenReturn(inValidCounties);
+        mvc.perform(get("/country/America")).
+        andExpect(status().isOk()).
+        andExpect(content().json(mapper.writeValueAsString(inValidCounties)));
+    }
+    
+    @Test
+    public void testGetFlag() throws Exception {
+    	ObjectMapper mapper = new ObjectMapper();
+    	final String classPathAdjustedDataFileName = "classpath:Africa2Flags.json";
+    	List<String> flags;
+    	
+    	File afr2flags = appContext.getResource(classPathAdjustedDataFileName).getFile();
+    	flags = mapper.readValue(afr2flags, new TypeReference<List<String>>() {
+        });
+    	
+    	// Check Africa(Ethiopia, Egypt) - should return 2 elements
+        Mockito.when(mockSearchSvc.getFlags("Africa", "Ethiopia,Egypt")).thenReturn(flags);
+        
+        mvc.perform(get("/flag?continent=Africa&countriesSelected=Ethiopia,Egypt")).
+        andExpect(status().isOk()).
+        andExpect(content().json(mapper.writeValueAsString(flags)));
     }
 }
