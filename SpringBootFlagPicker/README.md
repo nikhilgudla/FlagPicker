@@ -1,4 +1,5 @@
-Welcome to the Flag Picker Application.
+### Flag Picker Application.
+This API provides with end points to fetch flags in 3 steps.
 
 ### Flag Picker Service Instructions:
 
